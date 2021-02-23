@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
 
-txt_mode = "utf-8" # specify which format bytes will be in
+txt_mode = "utf-8" # specify what character encoding to use
 
 class ct: # colour text
     ENDC = '\033[0m'
@@ -35,16 +35,16 @@ class keyOperations: # crypto key operations
         foundPrime = False
         while not foundPrime:
             p = randint(2**(n-1), 2**n)
-            if keyOp.isPrime(p, 1000):
-                return int(p)
+            if keyOp.isPrime(p, 1000): # make sure the number can be divided by itself and 1
+                return int(p) # return prime number
 
     @staticmethod
     def keyGenerate(): # key generation
         keyPwd = input("Key password: ")
-        if keyPwd is None:
+        if keyPwd is None: # if user doesn't enter a password, generate a random string and use that
             letters = string.ascii_letters 
             resultStr = ''.join(random.choice(letters) for i in range(16))
-            keyPwd = str(resultStr).encode(txt_mode)
+            keyPwd = str(resultStr).encode(txt_mode) # encode the password into the selected encoding method
             keyPwd = str(keyPwd).encode(txt_mode) # generate a random string as the password if nothing is entered
             print("No password specified, using {}".format(keyPwd)) # tell the user what the password is 
         keyPwd = str(keyPwd).encode(txt_mode)
@@ -54,7 +54,7 @@ class keyOperations: # crypto key operations
             print(ct.SUCCESS + "Generated a prime!")
             print(keyPrime)
             pass
-        except:
+        except: # unable to get a prime number, so we'll use 1024 as a key entropy
             print(ct.ERROR + "Error while generating a prime number! Failover to 1024")
             keyPrime = int(1024)
             pass

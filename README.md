@@ -1,2 +1,2 @@
 # crypt
-Basic cryptography tools in Python
+Basic cryptography tools in Python using the Fernet algorithm.
