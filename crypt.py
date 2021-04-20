@@ -1,4 +1,4 @@
-import base64, os, string, random, calendar, hashlib # basic cryptography tool by SkryptKiddie
+import base64, os, string, random, calendar, hashlib, sys # basic cryptography tool by SkryptKiddie
 from datetime import datetime # uses the fernet key protocol
 from random import randint
 from cryptography.fernet import Fernet
@@ -40,13 +40,13 @@ class keyOperations: # crypto key operations
 
     @staticmethod
     def keyGenerate(): # key generation
-        keyPwd = input("Key password: ")
+        keyPwd = input("Enter the key password: ")
         if keyPwd is None: # if user doesn't enter a password, generate a random string and use that
             letters = string.ascii_letters 
             resultStr = ''.join(random.choice(letters) for i in range(16))
             keyPwd = str(resultStr).encode(txt_mode) # encode the password into the selected encoding method
             keyPwd = str(keyPwd).encode(txt_mode) # generate a random string as the password if nothing is entered
-            print("No password specified, using {}".format(keyPwd)) # tell the user what the password is 
+            print("No password specified, using {}. BE SURE TO SAVE THIS OR ELSE YOU CAN'T USE THE KEY!!".format(keyPwd)) # tell the user what the password is 
         keyPwd = str(keyPwd).encode(txt_mode)
         print(ct.NOTE + "Generating a large prime number...")
         try:
@@ -73,7 +73,8 @@ class keyOperations: # crypto key operations
             print(ct.NOTE + "MD5: " + keyHash.hexdigest()) # print the key hash
         except:
             print(ct.ERROR + "An unexpected error occured while generating a key.")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
 
     @staticmethod
     def keyExport(keyName, time, keyData): # export key to a file for cold storage
@@ -88,10 +89,12 @@ class keyOperations: # crypto key operations
             with open(keyFileName, "wb") as expKey:
                 expKey.write(keyName + br + ts + br + keyData) # format = key nickname:export time:crypto key
             print(ct.SUCCESS + "Exported key successfully! {}".format(str(keyFileName)))
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
         else:
             print(ct.ERROR + "Key validation failed! Unable to save.")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
 
     @staticmethod
     def keyValidate(validateKey, verbose): # key validation
@@ -99,7 +102,8 @@ class keyOperations: # crypto key operations
             key = Fernet(str(validateKey))
         except:
             print(ct.ERROR + "Invalid key")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
         letters = string.ascii_letters # generate a test string to validate the key
         resultStr = ''.join(random.choice(letters) for i in range(16))
         test_var = str(resultStr).encode(txt_mode)
@@ -121,10 +125,12 @@ class keyOperations: # crypto key operations
                     else:
                         print(ct.ERROR + "Key validation failed! Value mismatch.")
                         return False
+                    
                 except: # if we couldn't decrypt, error here
                     print(ct.ERROR + "Key validation failed!")
                     print(ct.ERROR + "Key {} failed decryption test".format(validateKey))
                     return False
+                
             except: # if we couldn't encrypt, error here
                 print(ct.ERROR + "Key validation failed!")
                 print(ct.ERROR + "Key {} failed encryption test".format(validateKey))
@@ -170,7 +176,8 @@ class cryptography: # cryptographic operations
                 print(ct.ERROR + "An error occured while trying to encrypt.")
         else:
             print(ct.ERROR + "Key validation failed! Unable to encrypt.")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
 
     @staticmethod
     def decryptText(decKey, decMessage):
@@ -185,7 +192,8 @@ class cryptography: # cryptographic operations
                 print(ct.ERROR + "An error occured while trying to decrypt.")
         else:
             print(ct.ERROR + "Key validation failed! Unable to decrypt.")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
 
     @staticmethod
     def encryptFile(encKey, encFile):
@@ -204,7 +212,8 @@ class cryptography: # cryptographic operations
 
         else:
             print(ct.ERROR + "Key validation failed! Unable to encrypt file.")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
 
     @staticmethod
     def decryptFile(decKey, decFile):
@@ -222,7 +231,8 @@ class cryptography: # cryptographic operations
                 print(ct.ERROR + "An error occured while trying to decrypt.")
         else:
             print(ct.ERROR + "Key validation failed! Unable to decrypt file.")
-            exit()
+            input("Press Enter to return to main menu...")
+            runtime()
 
 keyOp = keyOperations()
 crypto = cryptography()
@@ -284,7 +294,7 @@ def runtime():
 
     except KeyboardInterrupt:
         print(ct.NOTE + "Exiting...")
-        exit()
+        sys.exit()
 
 default_backend()
 runtime()
