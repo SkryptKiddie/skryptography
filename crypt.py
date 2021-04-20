@@ -222,7 +222,7 @@ class cryptography: # cryptographic operations
             key = Fernet(str(decKey))
             try:
                 with open(decFile, "rb") as file:
-                    encrypted_data = file.read()
+                    encrypted_data = file.read() # read the encrypted file contents and store it
                     decrypted_data = key.decrypt(encrypted_data) # decrypt the file
                     with open(decFile, "wb") as fileData:
                         fileData.write(decrypted_data) # write the decrypted data back into the file
@@ -241,7 +241,7 @@ def runtime():
     try:
         print("""
         -- cryptography --
-        (e)ncrypt message   (E)encrypt file
+        (e)ncrypt message   (E)ncrypt file
         (d)ecrypt message   (D)ecrypt file
         -- key managment --
         (g)enerate key    (v)alidate key
@@ -250,14 +250,15 @@ def runtime():
         opt = input("")
         if opt[:1] == "e": # encrypt message
             print(ct.BOLD + "Encrypt message" + ct.ENDC)
-            encKey = input("Key: ")
+            encKey = input("Paste the key: ")
             encMessage = input("Message: ")
             print("Output: " + str(crypto.encryptText(encKey, encMessage))) # calls the crypto.encryptText function
+            print("Be sure to transmit the key seperately from the message to avoid middleman decryption.")
 
         if opt[:1] == "d": # decrypt message
             print(ct.BOLD + "Decrypt message" + ct.ENDC)
-            decKey = input("Key: ")
-            decMessage = input("Encrypted hash: ")
+            decKey = input("Paste the key: ")
+            decMessage = input("Encrypted message: ")
             print("Output: " + str(crypto.decryptText(decKey, decMessage))) # calls the crypto.decryptText function
             print("Encryption timestamp: " + keyOp.encTimestamp(decKey, input=decMessage)) # call the keyOperations.encTimestamp function
 
@@ -267,6 +268,7 @@ def runtime():
             encFile = input("Filename: ")
             encKey = input("Key: ")
             crypto.encryptFile(encKey, encFile) # calls the crypto.encryptFile function
+            print("Be sure to transmit the key seperately from the file to avoid middleman decryption.")
             
         if opt[:1] == "D": # decrypt file
             print(ct.BOLD + "Decrypt file" + ct.ENDC)
